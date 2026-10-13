@@ -1,0 +1,15 @@
+{
+  "semente": 2026,
+  "nos": 404,
+  "arestas": 876,
+  "densidade": 0.010760877576591407,
+  "isolados": 70,
+  "componentes": 100,
+  "maior_componente": 75,
+  "grau_medio": 4.336633663366337,
+  "comunidades": 104,
+  "modularidade": 0.8218259366985675,
+  "comunidades_unitarias": 70,
+  "networkx": "3.7",
+  "pandas": "3.0.6"
+}

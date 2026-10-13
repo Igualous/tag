@@ -1,0 +1,9 @@
+.venv/
+.tools/
+__pycache__/
+.ipynb_checkpoints/
+tmp/
+*.aux
+*.log
+*.out
+*.synctex.gz

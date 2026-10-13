@@ -1,0 +1,208 @@
+% Mini-relatório: apresentação acadêmica baseada nas normas ABNT.
+% O cabeçalho substitui a capa separada para respeitar as cinco páginas.
+% gerar_relatorio.py preenche os dados e incorpora os gráficos em TikZ.
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{newtxtext,newtxmath}
+\usepackage[left=3cm,top=3cm,right=2cm,bottom=2cm,headheight=14pt,headsep=1cm]{geometry}
+\usepackage{setspace,indentfirst,booktabs,array,tikz,titlesec,fancyhdr}
+\usepackage[hyphens]{url}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{same}
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{2em}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{1em}{\MakeUppercase}
+\titlespacing*{\section}{0pt}{\baselineskip}{0.5\baselineskip}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\fontsize{10}{12}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\newcommand{\fonte}{\par\noindent{\fontsize{10}{12}\selectfont Fonte: elaboração própria (2026).}\par}
+\newcommand{\titulofigura}[2]{\noindent{\fontsize{10}{12}\selectfont Figura #1: #2}\par\smallskip}
+\hypersetup{pdftitle={Análise de uma amostra da rede social do Facebook},
+  pdfauthor={%%AUTORES_PDF%%}}
+%%CORES%%
+\begin{document}
+\begin{center}
+\begin{singlespace}
+\textbf{UNIVERSIDADE DE BRASÍLIA}\\
+Departamento de Ciência da Computação\\
+Teoria e Aplicação de Grafos (Turma 01, 2026/2)\\[0.4cm]
+\textbf{Análise de uma amostra da rede social do Facebook}\\[0.3cm]
+%%AUTORES%%
+Professor: Díbio\qquad Brasília, 2026
+\end{singlespace}
+\end{center}
+
+\section{Introdução}
+Analisamos 404 usuários da rede de amizades do Facebook. Calculamos as
+centralidades de grau, intermediação, proximidade e autovetor e usamos Louvain
+para encontrar comunidades. Os dados vêm do conjunto \textit{ego-Facebook}
+do Stanford Network Analysis Project (2012), formado por dez redes-ego com
+identificadores anônimos. Comparamos os resultados para entender quais
+usuários têm mais contatos e quais ocupam posições importantes nos caminhos
+entre os demais.
+
+\section{Preparação dos dados}
+Construímos um grafo simples, não direcionado e sem pesos com NetworkX
+(NetworkX Developers, 2026). Lemos as amizades dos arquivos \texttt{.edges}
+e acrescentamos as ligações de cada ego aos amigos da primeira coluna de
+\texttt{.feat}. A união das dez redes resultou em 4.039 nós e 88.234 arestas.
+
+Sorteamos 404 nós sem reposição, com a semente %%SEMENTE%%. Depois,
+selecionamos as arestas com as duas extremidades entre os sorteados,
+obtendo o subgrafo induzido. Mantivemos os nós que ficaram isolados para
+analisar todos os 404 usuários. A Tabela 1 reúne as características da amostra.
+
+\begin{singlespace}
+\noindent{\fontsize{10}{12}\selectfont Tabela 1: Características da amostra}
+\begin{center}
+\fontsize{10}{12}\selectfont
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lr}
+\toprule
+\textbf{Característica} & \textbf{Valor}\\
+\midrule
+%%RESUMO%%
+\bottomrule
+\end{tabular*}
+\end{center}
+\fonte
+\end{singlespace}
+
+\newpage
+\section{Centralidades e usuários de destaque}
+Calculamos as quatro medidas com as funções do NetworkX (NetworkX Developers,
+2026). O grau de centralidade corresponde ao número de vizinhos dividido por
+$N-1$. A intermediação normalizada mede a participação do usuário nos caminhos
+mínimos entre pares de outros nós. A proximidade considera a distância média
+aos nós alcançáveis e usa a correção de Wasserman-Faust para levar em conta
+essa fração da rede. O autovetor dá mais valor às ligações com usuários também
+centrais. Ele é obtido de $Ax=\lambda x$, com normalização euclidiana.
+
+\begin{singlespace}
+\noindent{\fontsize{10}{12}\selectfont Tabela 2: Maior valor de cada centralidade}
+\begin{center}
+\fontsize{10}{12}\selectfont
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrr}
+\toprule
+\textbf{Centralidade} & \textbf{Nó} & \textbf{Valor}\\
+\midrule
+%%LIDERES%%
+\bottomrule
+\end{tabular*}
+\end{center}
+\fonte
+\end{singlespace}
+
+O nó %%LIDER_GRAU%% possui %%GRAU_LIDER%% vizinhos em uma componente de
+%%COMPONENTE_GRAU%% usuários. Ele está ligado diretamente a quase toda essa
+componente e lidera grau, intermediação e proximidade. Isso indica um bom
+alcance inicial para uma informação e uma participação frequente nos caminhos
+mínimos entre os outros usuários da componente.
+
+No autovetor, o maior valor é do nó %%LIDER_AUTOVETOR%%, que pertence a uma
+componente de %%COMPONENTE_AUTOVETOR%% nós. Ele tem menos vizinhos que
+%%LIDER_GRAU%%, mas seus vizinhos também têm valores altos de autovetor e
+contribuem para seu resultado. Por isso, os maiores valores das quatro centralidades
+nem sempre pertencem ao mesmo usuário.
+
+O grafo tem %%NUM_COMPONENTES%% componentes conexas. Como há usuários sem
+caminho entre si, a proximidade usa apenas os alcançáveis, com a correção
+mencionada acima. O autovetor global ficou concentrado na componente de
+%%LIDER_AUTOVETOR%%. Ao todo, %%AUTOVETORES_PEQUENOS%% nós tiveram valor
+inferior a $10^{-6}$, incluindo %%LIDER_GRAU%%, apesar de seu alto grau.
+Usamos iteração de potência com tolerância $10^{-10}$ e limite de 1.000
+iterações. Os isolados receberam zero nas quatro medidas.
+
+\newpage
+\section{Visualização das centralidades}
+Na Figura 1, mantivemos as mesmas posições dos nós nos quatro mapas para
+facilitar a comparação. Nós maiores têm maior grau. As cores vão do roxo,
+para os menores valores da medida, ao amarelo, para os maiores. Os cinco
+usuários com os maiores valores estão identificados ao lado de cada mapa.
+
+\begin{singlespace}
+\titulofigura{1}{Mapas das quatro centralidades e respectivos usuários de destaque}
+\begin{center}
+%%MAPAS%%
+\end{center}
+\fonte
+\end{singlespace}
+
+Nos mapas de grau, intermediação e proximidade, o maior valor é do nó
+%%LIDER_GRAU%%. No autovetor, o maior valor é de %%LIDER_AUTOVETOR%%, que
+está em outra componente. O notebook traz os dez maiores valores de cada
+medida. Os resultados de todos os usuários estão no arquivo \texttt{metricas.csv}.
+
+\newpage
+\section{Comunidades pelo algoritmo de Louvain}
+Executamos Louvain com a função do NetworkX, resolução 1 e semente
+%%SEMENTE%%. O algoritmo move nós entre comunidades quando há ganho de
+modularidade e depois reúne as comunidades em uma rede menor. Essas duas
+etapas se repetem até que o ganho seja pequeno (Blondel \textit{et al.}, 2008).
+Encontramos %%NUM_COMUNIDADES%% comunidades, com modularidade de
+%%MODULARIDADE%%. O mapa e os tamanhos dos grupos estão na Figura 2.
+
+\begin{singlespace}
+\titulofigura{2}{Comunidades detectadas por Louvain na amostra}
+\begin{center}
+%%MAPA_COMUNIDADES%%
+\end{center}
+\fonte
+\end{singlespace}
+
+Dos grupos encontrados, %%COMUNIDADES_UNITARIAS%% são formados por um único
+nó isolado. Todos aparecem em cinza, e cada um tem sua própria comunidade.
+A modularidade alta também está relacionada à separação do grafo em
+componentes sem ligações entre si. Louvain pode dividir uma componente em
+mais de uma comunidade. Os grupos foram calculados a partir das arestas;
+não usamos os círculos de amizade informados nos arquivos \texttt{.circles}.
+
+\newpage
+\section{Considerações finais}
+O nó %%LIDER_GRAU%% foi o principal usuário nos resultados de grau,
+intermediação e proximidade. O nó %%LIDER_AUTOVETOR%% liderou o autovetor.
+Para espalhar uma informação pelas amizades da amostra, %%LIDER_GRAU%% teria
+mais contatos diretos, mas a mensagem ficaria restrita à sua componente.
+Essa interpretação vem das ligações do grafo, pois não simulamos a
+propagação de mensagens. A Figura 3 mostra a distribuição dos graus e o
+tamanho das comunidades encontradas.
+
+\begin{singlespace}
+\titulofigura{3}{Distribuição dos graus e tamanhos das comunidades}
+\begin{center}
+%%DISTRIBUICOES%%
+\end{center}
+\fonte
+\end{singlespace}
+
+Ao selecionar 404 dos 4.039 usuários, perdemos ligações que existiam na rede
+completa. Isso ajuda a explicar os nós isolados e as várias componentes
+conexas. Assim, os resultados se referem aos usuários sorteados e às
+amizades que permaneceram na amostra. O notebook permite repetir os cálculos,
+e os arquivos CSV registram a seleção dos nós e os valores das métricas.
+
+\section*{Referências}
+\begin{singlespace}
+\setlength{\parindent}{0pt}
+\raggedright
+BLONDEL, Vincent D.; GUILLAUME, Jean-Loup; LAMBIOTTE, Renaud; LEFEBVRE,
+Etienne. Fast unfolding of communities in large networks.
+\textbf{Journal of Statistical Mechanics: Theory and Experiment},
+[S. l.], v. 2008, n. 10, P10008, 2008.
+DOI: \url{https://doi.org/10.1088/1742-5468/2008/10/P10008}.
+\par\medskip
+NETWORKX DEVELOPERS. \textbf{NetworkX documentation}. Versão %%VERSAO_NETWORKX%%.
+[S. l.], 2026. Disponível em: \url{https://networkx.org/documentation/stable/}.
+Acesso em: 12 out. 2026.
+\par\medskip
+STANFORD NETWORK ANALYSIS PROJECT. \textbf{Social circles: Facebook}.
+Stanford, 2012. Disponível em:
+\url{https://snap.stanford.edu/data/egonets-Facebook.html}.
+Acesso em: 12 out. 2026.
+\end{singlespace}
+\end{document}
