@@ -150,6 +150,16 @@ def gerar_relatorio(pasta=PASTA_RESULTADOS, destino=None, compilar=True):
     posicoes = nx.spring_layout(grafo, seed=resumo["semente"], k=0.28, iterations=200)
     lideres = {m: ranking(metricas, m, 1).iloc[0] for m in METRICAS}
     grau, autovetor = lideres["centralidade_grau"], lideres["autovetor"]
+    intermediacao = lideres["intermediacao"]
+    segundo_intermediacao = ranking(metricas, "intermediacao", 2).iloc[1]
+    vizinhos = list(grafo.neighbors(int(intermediacao["no"])))
+    comunidades_vizinhas = metricas.set_index("no").loc[vizinhos, "comunidade"].nunique()
+    # O texto de relatorio_base.tex descreve esta amostra; revise-o se a semente mudar.
+    if (int(intermediacao["no"]) != int(lideres["proximidade"]["no"])
+            or int(segundo_intermediacao["no"]) != int(ranking(metricas, "proximidade", 2).iloc[1]["no"])
+            or int(grau["no"]) == int(intermediacao["no"])
+            or len({int(lideres[m]["componente"]) for m in METRICAS} | {0}) != 1):
+        raise ValueError("Os líderes mudaram; revise o texto de relatorio_base.tex.")
     mapas = [mapa_metrica(grafo, metricas, posicoes, m, t.replace("Centralidade de ", "").capitalize())
              for m, t in METRICAS.items()]
     mapas_tex = (r"\begin{minipage}[t]{0.485\textwidth}\centering" + mapas[0] + r"\par\medskip"
@@ -172,7 +182,12 @@ def gerar_relatorio(pasta=PASTA_RESULTADOS, destino=None, compilar=True):
         "COMPONENTE_GRAU": str(int(grau["tamanho_componente"])),
         "LIDER_AUTOVETOR": str(int(autovetor["no"])),
         "COMPONENTE_AUTOVETOR": str(int(autovetor["tamanho_componente"])),
+        "LIDER_INTERMEDIACAO": str(int(intermediacao["no"])),
+        "GRAU_INTERMEDIACAO": str(int(intermediacao["grau"])),
+        "SEGUNDO_INTERMEDIACAO": str(int(segundo_intermediacao["no"])),
+        "COMUNIDADES_VIZINHAS": str(comunidades_vizinhas),
         "AUTOVETORES_PEQUENOS": str(int((metricas.autovetor < 1e-6).sum())),
+        "AUTOVETORES_PEQUENOS_FORA": str(int(((metricas.autovetor < 1e-6) & (metricas.componente != 0)).sum())),
         "NUM_COMUNIDADES": str(resumo["comunidades"]), "NUM_COMPONENTES": str(resumo["componentes"]),
         "MODULARIDADE": numero(resumo["modularidade"]),
         "COMUNIDADES_UNITARIAS": str(resumo["comunidades_unitarias"]),

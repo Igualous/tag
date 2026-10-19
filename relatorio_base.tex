@@ -99,12 +99,14 @@ centrais. Ele é obtido de $Ax=\lambda x$, com normalização euclidiana.
 \end{singlespace}
 
 O nó %%LIDER_GRAU%% possui %%GRAU_LIDER%% vizinhos em uma componente de
-%%COMPONENTE_GRAU%% usuários. Ele está ligado diretamente a quase toda essa
-componente e lidera grau, intermediação e proximidade. Isso indica um bom
-alcance inicial para uma informação e uma participação frequente nos caminhos
-mínimos entre os outros usuários da componente.
+%%COMPONENTE_GRAU%% usuários e lidera o grau. Isso indica o maior alcance
+inicial para uma informação. Já o nó %%LIDER_INTERMEDIACAO%%, com apenas
+%%GRAU_INTERMEDIACAO%% vizinhos, lidera intermediação e proximidade, seguido
+por %%SEGUNDO_INTERMEDIACAO%% nas duas medidas. Seus vizinhos estão em
+%%COMUNIDADES_VIZINHAS%% comunidades diferentes: ele participa de muitos
+caminhos mínimos e funciona como ponte entre grupos da componente.
 
-No autovetor, o maior valor é do nó %%LIDER_AUTOVETOR%%, que pertence a uma
+No autovetor, o maior valor é do nó %%LIDER_AUTOVETOR%%, que pertence à mesma
 componente de %%COMPONENTE_AUTOVETOR%% nós. Ele tem menos vizinhos que
 %%LIDER_GRAU%%, mas seus vizinhos também têm valores altos de autovetor e
 contribuem para seu resultado. Por isso, os maiores valores das quatro centralidades
@@ -112,9 +114,10 @@ nem sempre pertencem ao mesmo usuário.
 
 O grafo tem %%NUM_COMPONENTES%% componentes conexas. Como há usuários sem
 caminho entre si, a proximidade usa apenas os alcançáveis, com a correção
-mencionada acima. O autovetor global ficou concentrado na componente de
-%%LIDER_AUTOVETOR%%. Ao todo, %%AUTOVETORES_PEQUENOS%% nós tiveram valor
-inferior a $10^{-6}$, incluindo %%LIDER_GRAU%%, apesar de seu alto grau.
+mencionada acima. O autovetor global ficou concentrado na maior componente,
+onde estão os líderes das quatro medidas. Ao todo, %%AUTOVETORES_PEQUENOS%% nós tiveram
+valor inferior a $10^{-6}$, %%AUTOVETORES_PEQUENOS_FORA%% deles fora dessa
+componente; isso reflete a componente de cada um, não irrelevância local.
 Usamos iteração de potência com tolerância $10^{-10}$ e limite de 1.000
 iterações. Os isolados receberam zero nas quatro medidas.
 
@@ -133,9 +136,9 @@ usuários com os maiores valores estão identificados ao lado de cada mapa.
 \fonte
 \end{singlespace}
 
-Nos mapas de grau, intermediação e proximidade, o maior valor é do nó
-%%LIDER_GRAU%%. No autovetor, o maior valor é de %%LIDER_AUTOVETOR%%, que
-está em outra componente. O notebook traz os dez maiores valores de cada
+O maior grau é do nó %%LIDER_GRAU%%; intermediação e proximidade são
+lideradas por %%LIDER_INTERMEDIACAO%%, e o autovetor, por %%LIDER_AUTOVETOR%%,
+todos na mesma componente. O notebook traz os dez maiores valores de cada
 medida. Os resultados de todos os usuários estão no arquivo \texttt{metricas.csv}.
 
 \newpage
@@ -164,10 +167,11 @@ não usamos os círculos de amizade informados nos arquivos \texttt{.circles}.
 
 \newpage
 \section{Considerações finais}
-O nó %%LIDER_GRAU%% foi o principal usuário nos resultados de grau,
-intermediação e proximidade. O nó %%LIDER_AUTOVETOR%% liderou o autovetor.
+O nó %%LIDER_GRAU%% liderou o grau, %%LIDER_INTERMEDIACAO%% liderou
+intermediação e proximidade, e %%LIDER_AUTOVETOR%% liderou o autovetor.
 Para espalhar uma informação pelas amizades da amostra, %%LIDER_GRAU%% teria
-mais contatos diretos, mas a mensagem ficaria restrita à sua componente.
+mais contatos diretos e %%LIDER_INTERMEDIACAO%% ligaria grupos diferentes,
+mas a mensagem ficaria restrita à componente de ambos.
 Essa interpretação vem das ligações do grafo, pois não simulamos a
 propagação de mensagens. A Figura 3 mostra a distribuição dos graus e o
 tamanho das comunidades encontradas.

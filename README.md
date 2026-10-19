@@ -6,7 +6,7 @@ Projeto 1 de Teoria e Aplicação de Grafos, Turma 01, UnB, 2026/2.
 |---|---|
 | Igor Araújo Rodrigues | 242001517 |
 | Eduardo Marques Pereira | 211021004 |
-| Terceiro integrante: preencher | preencher |
+| Matheus Barbosa e Silva | 190113987 |
 
 ## Executar
 
@@ -32,10 +32,10 @@ no diretório de execução. As células de análise não precisam importar o sc
 
 1. Reconstrói a rede com as dez redes-ego: lê `.edges` e acrescenta as amizades
    de cada ego com os usuários da primeira coluna de `.feat`.
-2. Sorteia 404 nós sem reposição, usando a semente 2026 do Igor, e constrói o
+2. Sorteia 404 nós sem reposição, usando a semente 1306308606, e constrói o
    subgrafo induzido. Mantém todos os nós, inclusive isolados.
 3. Calcula centralidades de grau, intermediação, proximidade e autovetor.
-4. Executa Louvain com resolução 1 e semente 2026.
+4. Executa Louvain com resolução 1 e semente 1306308606.
 5. Salva tabelas, mapas com rótulos e valores dos cinco líderes, rankings dos
    dez maiores valores, distribuições e um mapa colorido das comunidades.
 6. Gera o mini-relatório de cinco páginas a partir dos resultados salvos.
@@ -95,9 +95,13 @@ dependência de imagens ou bibliografia externas. Para editar o texto de forma
 permanente, altere `relatorio_base.tex` e gere novamente o relatório.
 Os mapas completos continuam no notebook e nos PNG individuais.
 
-Com a semente 2026: 404 nós, 876 arestas, 70 isolados, 100 componentes conexas,
-104 comunidades Louvain e modularidade aproximada de 0,821826. O nó 1684 lidera
-grau, intermediação e proximidade; o nó 2543 lidera autovetor.
+Com a semente 1306308606: 404 nós, 885 arestas, 74 isolados, 109 componentes
+conexas (a maior com 142 nós), 115 comunidades Louvain e modularidade aproximada
+de 0,814953. O nó 1941 lidera o grau, o nó 1465 lidera intermediação e
+proximidade e o nó 2464 lidera o autovetor, todos na maior componente.
+
+O texto de `relatorio_base.tex` descreve esses líderes. `gerar_relatorio.py`
+interrompe a geração se uma nova amostra deixar o texto incorreto.
 
 ## Validação
 
@@ -114,8 +118,6 @@ a exportação GraphML e a execução do notebook com as sete figuras.
 
 ## Antes de entregar
 
-- Preencher o terceiro integrante neste README, no início do notebook e em
-  `INTEGRANTES` no script; depois recriar o PDF com `gerar_relatorio.py`.
 - Conferir com o grupo se a lista sorteada não é igual à de outro grupo.
   A semente torna o sorteio reproduzível, mas não garante exclusividade.
 - Se mudar a semente, atualizar o script e o notebook, executar tudo e revisar

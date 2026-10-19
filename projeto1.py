@@ -11,12 +11,12 @@ from matplotlib.patches import ConnectionPatch
 
 PASTA_DADOS = Path(__file__).resolve().parent / "facebook"
 QUANTIDADE_NOS = 404
-SEMENTE = 2026
+SEMENTE = 1306308606
 PASTA_RESULTADOS = Path(__file__).resolve().parent / "resultados"
 INTEGRANTES = [
     ("Igor Araújo Rodrigues", "242001517"),
     ("Eduardo Marques Pereira", "211021004"),
-    ("Terceiro integrante: preencher", "preencher"),
+    ("Matheus Barbosa e Silva", "190113987"),
 ]
 METRICAS = {
     "centralidade_grau": "Centralidade de grau",
